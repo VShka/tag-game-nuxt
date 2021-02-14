@@ -1,14 +1,13 @@
 <template>
   <div class="game">
     <div class="game__header">
-      <div class="game__move-counter">Вы сделали 20 ходов</div>
+      <div class="game__move-counter">Кол-во шагов:{{ stepCounter }}</div>
     </div>
     <div class="game-grid">
       <div
         v-for="(item, index) in arrGridItem"
         :key="index"
         :style="itemsCoordinates[index]"
-        ref="div"
         class="game-grid__item"
         @click="moveItem(index)"
       >
@@ -29,9 +28,12 @@ export default {
         left: 0,
       },
       itemSize: 100,
+      stepCounter: 0,
     }
   },
   created() {
+    this.arrGridItem.sort(() => Math.random() - 0.5)
+
     this.arrGridItem.forEach((item) => {
       const leftPos = item % 4
       const topPos = (item - leftPos) / 4
@@ -44,35 +46,23 @@ export default {
       this.itemsCoordinates.push({
         top: coordinates.top,
         left: coordinates.left,
-        element: this.$refs.div,
+        currentLeft: leftPos,
+        currentTop: topPos,
       })
     })
-
-    this.itemsCoordinates.sort(() => Math.random() - 0.5)
   },
   methods: {
-    // itemPos(item) {
-    //   const leftPos = item % 4
-    //   const topPos = (item - leftPos) / 4
-
-    //   this.itemsCoordinates.push({
-    //     top: topPos,
-    //     left: leftPos,
-    //     element: this.$refs.div,
-    //   })
-
-    //   return {
-    //     top: `${topPos * this.itemSize + 5}px`,
-    //     left: `${leftPos * this.itemSize + 5}px`,
-    //     bottom: `${5}px`,
-    //     right: `${5}px`,
-    //   }
-    // },
     moveItem(index) {
       const item = this.itemsCoordinates[index]
       console.log(item)
-      // item.top = `${this.emptyItem.top * this.itemSize + 5}px`
-      // item.left = `${this.emptyItem.left * this.itemSize + 5}px`
+
+      item.top = `${this.emptyItem.top * this.itemSize + 5}px`
+      item.left = `${this.emptyItem.left * this.itemSize + 5}px`
+
+      this.stepCounter++
+
+      this.emptyItem.left = item.currentLeft
+      this.emptyItem.top = item.currentTop
     },
   },
 }
