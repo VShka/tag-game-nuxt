@@ -7,9 +7,10 @@
       <div
         v-for="(item, index) in arrGridItem"
         :key="index"
-        :style="itemPos(index)"
+        :style="itemsCoordinates[index]"
+        ref="div"
         class="game-grid__item"
-        @click="moveItem(item)"
+        @click="moveItem(index)"
       >
         {{ item }}
       </div>
@@ -22,7 +23,7 @@ export default {
   data() {
     return {
       arrGridItem: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-      itemsCoordinate: [],
+      itemsCoordinates: [],
       emptyItem: {
         top: 0,
         left: 0,
@@ -31,25 +32,47 @@ export default {
     }
   },
   created() {
-    this.arrGridItem.sort(() => Math.random() - 0.5)
-
-    this.itemsCoordinate.push(this.emptyItem)
-  },
-  methods: {
-    itemPos(item) {
+    this.arrGridItem.forEach((item) => {
       const leftPos = item % 4
       const topPos = (item - leftPos) / 4
 
-      return {
+      const coordinates = {
         top: `${topPos * this.itemSize + 5}px`,
         left: `${leftPos * this.itemSize + 5}px`,
-        bottom: `${5}px`,
-        right: `${5}px`,
       }
-    },
-    moveItem(item) {
-      item.top = `${this.emptyItem.top * this.itemSize + 5}px`
-      item.left = `${this.emptyItem.left * this.itemSize + 5}px`
+
+      this.itemsCoordinates.push({
+        top: coordinates.top,
+        left: coordinates.left,
+        element: this.$refs.div,
+      })
+    })
+
+    this.itemsCoordinates.sort(() => Math.random() - 0.5)
+  },
+  methods: {
+    // itemPos(item) {
+    //   const leftPos = item % 4
+    //   const topPos = (item - leftPos) / 4
+
+    //   this.itemsCoordinates.push({
+    //     top: topPos,
+    //     left: leftPos,
+    //     element: this.$refs.div,
+    //   })
+
+    //   return {
+    //     top: `${topPos * this.itemSize + 5}px`,
+    //     left: `${leftPos * this.itemSize + 5}px`,
+    //     bottom: `${5}px`,
+    //     right: `${5}px`,
+    //   }
+    // },
+    moveItem(index) {
+      const item = this.itemsCoordinates[index]
+      console.log(item)
+      // item.top = `${this.emptyItem.top * this.itemSize + 5}px`
+      // item.left = `${this.emptyItem.left * this.itemSize + 5}px`
     },
   },
 }
