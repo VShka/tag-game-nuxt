@@ -1,5 +1,9 @@
 # tag-game-nuxt
 
+## Поиграть тут => https://vshka.github.io/tag-game-nuxt/
+
+Перемешайте для игры
+
 ## Build Setup
 
 ```bash
