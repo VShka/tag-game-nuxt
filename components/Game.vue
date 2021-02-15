@@ -3,7 +3,7 @@
     <div class="game__header">
       <div class="game__move-counter">Кол-во шагов:{{ stepCounter }}</div>
     </div>
-    <div class="game-grid">
+    <div class="game-grid" :style="gridArea">
       <div
         v-for="(item, index) in arrGridItem"
         :key="index"
@@ -14,7 +14,6 @@
         {{ item }}
       </div>
     </div>
-    <button class="game__btn-shuffle" @click="shuffle">Перемешать</button>
   </div>
 </template>
 
@@ -23,60 +22,48 @@ export default {
   data() {
     return {
       arrGridItem: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-      itemsCoordinates: [],
-      emptyItem: {
-        top: 0,
-        left: 0,
-      },
+      itemsCoordinates: [
+        { 'grid-area': 'one' },
+        { 'grid-area': 'two' },
+        { 'grid-area': 'three' },
+        { 'grid-area': 'four' },
+        { 'grid-area': 'five' },
+        { 'grid-area': 'six' },
+        { 'grid-area': 'seven' },
+        { 'grid-area': 'eight' },
+        { 'grid-area': 'nine' },
+        { 'grid-area': 'ten' },
+        { 'grid-area': 'eleven' },
+        { 'grid-area': 'twelve' },
+        { 'grid-area': 'thirteen' },
+        { 'grid-area': 'fourteen' },
+        { 'grid-area': 'fifteen' },
+        { 'grid-area': 'empty' },
+      ],
+      emptyItem: { 'grid-area': 'empty' },
       itemSize: 100,
       stepCounter: 0,
+      gridArea: {
+        'grid-template-areas': `'one two three four'
+                                'five six seven eight'
+                                'nine ten eleven twelve'
+                            'thirteen fourteen fifteen empty'`,
+      },
     }
   },
   created() {
-    this.arrGridItem.forEach((item) => {
-      const leftPos = item % 4
-      const topPos = (item - leftPos) / 4
-
-      this.itemsCoordinates.push({
-        top: `${topPos * this.itemSize + 5}px`,
-        left: `${leftPos * this.itemSize + 5}px`,
-        currentLeft: leftPos,
-        currentTop: topPos,
-        value: item,
-      })
-    })
+    this.arrGridItem.sort(() => Math.random() - 0.5)
   },
   methods: {
-    shuffle() {
-      this.arrGridItem.sort(() => Math.random() - 0.5)
-    },
     moveItem(index) {
       const item = this.itemsCoordinates[index]
-      const emptyTop = this.emptyItem.top
-      const emptyLeft = this.emptyItem.left
-      const topDiff = Math.abs(this.emptyItem.top - item.currentTop)
-      const leftDiff = Math.abs(this.emptyItem.left - item.currentLeft)
+      const emptyItem = this.emptyItem['grid-area']
+      const itemGrid = item['grid-area']
 
-      if (topDiff + leftDiff > 1) {
-        return
-      }
-
-      item.top = `${this.emptyItem.top * this.itemSize + 5}px`
-      item.left = `${this.emptyItem.left * this.itemSize + 5}px`
-      this.emptyItem.top = item.currentTop
-      this.emptyItem.left = item.currentLeft
-      item.currentTop = emptyTop
-      item.currentLeft = emptyLeft
+      item['grid-area'] = emptyItem
+      this.emptyItem['grid-area'] = itemGrid
 
       this.stepCounter++
-
-      const isFinished = this.itemsCoordinates.every((item) => {
-        return item.value === item.currentTop * 4 + item.currentLeft
-      })
-
-      if (isFinished) {
-        alert('Вы выйграли')
-      }
     },
   },
 }
@@ -97,7 +84,7 @@ export default {
   }
 
   .game-grid {
-    position: relative;
+    display: grid;
     width: 400px;
     height: 400px;
     background-color: rgb(202, 229, 219);
@@ -106,7 +93,6 @@ export default {
     padding: 5px;
 
     .game-grid__item {
-      position: absolute;
       display: flex;
       justify-content: center;
       align-items: center;
