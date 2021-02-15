@@ -1,11 +1,7 @@
 export default {
   target: 'static',
   router: {
-<<<<<<< HEAD
     base: '/tag-game-nuxt/',
-=======
-    base: '/VShka/',
->>>>>>> 3c1cd9b45583c9f6a0724bfd5cbcbd389542c596
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
