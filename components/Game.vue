@@ -14,6 +14,7 @@
         {{ item }}
       </div>
     </div>
+    <button class="game__btn-shuffle" @click="shuffle">Перемешать</button>
   </div>
 </template>
 
@@ -32,37 +33,40 @@ export default {
     }
   },
   created() {
-    this.arrGridItem.sort(() => Math.random() - 0.5)
-
     this.arrGridItem.forEach((item) => {
       const leftPos = item % 4
       const topPos = (item - leftPos) / 4
 
-      const coordinates = {
+      this.itemsCoordinates.push({
         top: `${topPos * this.itemSize + 5}px`,
         left: `${leftPos * this.itemSize + 5}px`,
-      }
-
-      this.itemsCoordinates.push({
-        top: coordinates.top,
-        left: coordinates.left,
         currentLeft: leftPos,
         currentTop: topPos,
       })
     })
   },
   methods: {
+    shuffle() {
+      this.arrGridItem.sort(() => Math.random() - 0.5)
+    },
     moveItem(index) {
       const item = this.itemsCoordinates[index]
-      console.log(item)
+      const emptyTop = this.emptyItem.top
+      const emptyLeft = this.emptyItem.left
+      const topDiff = Math.abs(this.emptyItem.top - item.currentTop)
+      const leftDiff = Math.abs(this.emptyItem.left - item.currentLeft)
+      if (topDiff + leftDiff > 1) {
+        return
+      }
 
       item.top = `${this.emptyItem.top * this.itemSize + 5}px`
       item.left = `${this.emptyItem.left * this.itemSize + 5}px`
+      this.emptyItem.top = item.currentTop
+      this.emptyItem.left = item.currentLeft
+      item.currentTop = emptyTop
+      item.currentLeft = emptyLeft
 
       this.stepCounter++
-
-      this.emptyItem.left = item.currentLeft
-      this.emptyItem.top = item.currentTop
     },
   },
 }
@@ -104,7 +108,7 @@ export default {
       border-radius: 10px;
       box-sizing: border-box;
       background-color: rgb(223, 219, 219);
-      transition: all 0.3s;
+      transition: all linear 0.3s;
       cursor: pointer;
     }
   }
