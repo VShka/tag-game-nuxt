@@ -42,6 +42,7 @@ export default {
         left: `${leftPos * this.itemSize + 5}px`,
         currentLeft: leftPos,
         currentTop: topPos,
+        value: item,
       })
     })
   },
@@ -55,6 +56,7 @@ export default {
       const emptyLeft = this.emptyItem.left
       const topDiff = Math.abs(this.emptyItem.top - item.currentTop)
       const leftDiff = Math.abs(this.emptyItem.left - item.currentLeft)
+
       if (topDiff + leftDiff > 1) {
         return
       }
@@ -67,6 +69,15 @@ export default {
       item.currentLeft = emptyLeft
 
       this.stepCounter++
+
+      const isFinished = this.itemsCoordinates.every((item) => {
+        console.log(item.value, item.currentTop, item.currentLeft)
+        return item.value === item.currentTop * 4 + item.currentLeft
+      })
+
+      if (isFinished) {
+        alert('Вы выйграли')
+      }
     },
   },
 }
